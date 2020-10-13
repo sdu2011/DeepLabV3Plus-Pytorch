@@ -8,6 +8,7 @@ import torchvision.transforms as transforms
 import numpy as np
 import time
 
+
 def main():
     model = network.deeplabv3plus_mobilenet(num_classes=19,output_stride=16)
     model.eval()
@@ -44,6 +45,10 @@ def main():
     print('耗时{}秒'.format(end-start))
     print(output.shape) 
     output = output[0]
+    print(type(output))
+    
+    #导出onnx模型
+    torch.onnx.export(model,input_tensor,"best_deeplabv3plus_mobilenet_cityscapes_os16.onnx",opset_version=11,input_names = ['input'],output_names = ['output'])
 
     output_predictions = output.argmax(0)  # h x w
     print('output_predictions shape:{},type:{}'.format(output_predictions.shape,output_predictions.dtype))
